@@ -1,9 +1,11 @@
 from flask import Flask, render_template
 from flask import request
+from werkzeug.wsgi import DispatcherMiddleware
+from app_manager import job_app, data_app
 
-app = Flask("flowserver")
+manager = Flask(__name__)
 
-@app.route('/register',methods=['GET','POST'])
+@manager.route('/register',methods=['GET','POST'])
 def register():
     if request == 'GET':
         return render_template('register.html')
@@ -15,4 +17,4 @@ def register():
         return render_template('login.html')
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.1",port="8282")
+    app = DispatcherMiddleware(manager,{"/data":data_app,"/job":job_app})
